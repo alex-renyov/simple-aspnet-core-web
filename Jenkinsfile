@@ -28,6 +28,11 @@ pipeline {
 					sh "npm run build"
 				}
 			}
+			post {
+			    always {
+				    archiveArtifacts artifacts: 'MySimpleWebApp/ClientApp/build/**/*'
+				}
+			}
 		}
 	}
 }
