@@ -15,7 +15,6 @@ pipeline {
 			post {
                 always {
                     archiveArtifacts artifacts: 'backend/**/*'
-					archiveArtifacts artifacts: 'docker-backend/*'
                 }
             }
 		}
@@ -34,6 +33,11 @@ pipeline {
 					customImage.push('latest')
 				}
 			}
+			post {
+                always {
+                    archiveArtifacts artifacts: 'docker-backend/*'
+                }
+            }
 		}
 		stage('Frontend') {
 		    agent {
