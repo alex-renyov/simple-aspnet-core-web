@@ -10,7 +10,11 @@ pipeline {
 				DOTNET_CLI_TELEMETRY_OPTOUT = "true"
 			}
 			steps {
-                sh 'dotnet publish MySimpleWebApp/MySimpleWebApp.csproj --configuration Release --output ./backend'
+				script {
+					def branch = env.GIT_BRANCH.substring("release/".size())
+					def version = branch + ".0." + env.BUILD_NUMBER
+					sh "dotnet publish MySimpleWebApp/MySimpleWebApp.csproj --configuration Release --output ./backend /p:InformationalVersion=$version /p:FileVersion=$version /p:AssemblyVersion=$version /p:Version=$version"
+				}
 				stash name: 'backend', includes: 'backend/**/*'
             }
 			post {
@@ -29,29 +33,11 @@ pipeline {
 			steps {
 			    unstash name: 'backend'
 				script {
-					def customImage = docker.build("limpalex/simple-web-backend:1.0", "-f Backend.dockerfile .")
+				    def branch = env.GIT_BRANCH.substring("release/".size())
+					def customImage = docker.build("limpalex/simple-web-backend:$branch", "-f Backend.dockerfile .")
 					docker.withRegistry('', 'limpalex-docker-com') {
 						customImage.push()
-						customImage.push('latest')
 					}
-				}
-			}
-		}
-		stage('Frontend') {
-		    agent {
-			    docker { image 'node:lts' }
-			}
-			steps {
-			    dir("${env.WORKSPACE}/MySimpleWebApp/ClientApp") {
-					sh "npm install"
-					sh "npm run build"
-					sh "mkdir ../../frontend"
-					sh "cp -r build/* ../../frontend"
-				}
-			}
-			post {
-			    always {
-    		        archiveArtifacts artifacts: 'frontend/**/*'
 				}
 			}
 		}
