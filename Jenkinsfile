@@ -12,6 +12,11 @@ pipeline {
 			steps {
                 sh 'dotnet publish MySimpleWebApp/MySimpleWebApp.csproj --configuration Release --output ./app'
             }
+			post {
+                always {
+                    archiveArtifacts artifacts: 'app/**/*'
+                }
+            }
 		}
 		stage('Front-end') {
 		    agent {
@@ -25,9 +30,4 @@ pipeline {
 			}
 		}
 	}
-	post {
-        always {
-            archiveArtifacts artifacts: 'app/**/*'
-        }
-    }
 }
