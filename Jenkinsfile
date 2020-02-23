@@ -19,9 +19,7 @@ pipeline {
             }
 		}
 		stage('Backend-Docker') {
-			agent {
-				label 'docker'
-			}
+			agent any
 			environment {
 				registry = "limpalex/simple-web-backend"
                 registryCredential = "limpalex-docker-com"
