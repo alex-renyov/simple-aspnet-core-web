@@ -25,7 +25,7 @@ pipeline {
 			steps {
 			    dir("${env.WORKSPACE}/MySimpleWebApp/ClientApp"){
 					sh "npm install"
-					sh "npm build"
+					sh "npm run build"
 				}
 			}
 		}
