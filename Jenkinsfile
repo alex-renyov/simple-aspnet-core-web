@@ -13,11 +13,13 @@ pipeline {
 			}
 			steps {
                 sh 'dotnet publish MySimpleWebApp/MySimpleWebApp.csproj --configuration Release --output ./backend'
-				def customImage = docker.build("my-simple-web-app:1.0", "-f ${dockerfile} ./docker-backend")
-				def dockerfile = 'Backend.dockerfile'
-				customImage.push()
-				customImage.push('latest')
-
+				script {
+					def dockerfile = 'Backend.dockerfile'
+					def customImage = docker.build(registry + ":1.0", "-f ${dockerfile} ./docker-backend")
+				
+					customImage.push()
+					customImage.push('latest')
+				}
             }
 			post {
                 always {
