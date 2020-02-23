@@ -5,7 +5,7 @@ pipeline {
     stages {
         stage('Test') {
             steps {
-                sh 'dotnet publish MySimpleWebApp\MySimpleWebApp.csproj --configuration Release --verbosity detailed --output ./app'
+                sh 'dotnet publish MySimpleWebApp/MySimpleWebApp.csproj --configuration Release --verbosity detailed --output ./app'
             }
         }
     }
