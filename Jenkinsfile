@@ -11,8 +11,8 @@ pipeline {
 			}
 			steps {
                 sh 'dotnet publish MySimpleWebApp/MySimpleWebApp.csproj --configuration Release --output ./backend'
-				docker.withRegistry('https://hub.docker.com/u/limpalex', 'limpalex-docker-com') {
-					def customImage = docker.build("my-simple-web-app:1.0", "-f ${dockerfile} ./docker-backend"
+				docker.withRegistry('limpalex/simple-web-backend', 'limpalex-docker-com') {
+					def customImage = docker.build("my-simple-web-app:1.0", "-f ${dockerfile} ./docker-backend")
 					def dockerfile = 'Backend.dockerfile'
 					customImage.push()
 					customImage.push('latest')
