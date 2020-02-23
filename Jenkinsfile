@@ -11,6 +11,7 @@ pipeline {
 			}
 			steps {
                 sh 'dotnet publish MySimpleWebApp/MySimpleWebApp.csproj --configuration Release --output ./backend'
+				stash name: 'backend', include: 'backend/**/*'
             }
 			post {
                 always {
@@ -26,7 +27,7 @@ pipeline {
 
 			}
 			steps {
-			    sh 'mkdir docker-backend'
+			    unstash name: 'backend'
 				script {
 					def dockerfile = 'Backend.dockerfile'
 					def customImage = docker.build(registry + ":1.0", "-f ${dockerfile} .")
