@@ -29,7 +29,7 @@ pipeline {
 			    sh 'mkdir docker-backend'
 				script {
 					def dockerfile = 'Backend.dockerfile'
-					def customImage = docker.build(registry + ":1.0", "-f ${dockerfile} ./docker-backend")
+					def customImage = docker.build(registry + ":1.0", "-f ${dockerfile} .")
 				
 					customImage.push()
 					customImage.push('latest')
