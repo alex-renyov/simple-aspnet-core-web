@@ -2,6 +2,9 @@ pipeline {
     agent {
         docker { image 'mcr.microsoft.com/dotnet/core/sdk' }
     }
+    environment {
+        DOTNET_CLI_HOME = "/tmp/DOTNET_CLI_HOME"
+    }
     stages {
         stage('Test') {
             steps {
