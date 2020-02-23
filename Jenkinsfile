@@ -29,9 +29,8 @@ pipeline {
 			steps {
 			    unstash name: 'backend'
 				script {
-					docker.withRegistry('limpalex', 'limpalex-docker-com') {
-						def customImage = docker.build("simple-web-backend:1.0", "-f Backend.dockerfile .")
-					
+					def customImage = docker.build("limpalex/simple-web-backend:1.0", "-f Backend.dockerfile .")
+					docker.withRegistry('', 'limpalex-docker-com') {
 						customImage.push()
 						customImage.push('latest')
 					}
