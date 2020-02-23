@@ -10,11 +10,11 @@ pipeline {
 				DOTNET_CLI_TELEMETRY_OPTOUT = "true"
 			}
 			steps {
-                sh 'dotnet publish MySimpleWebApp/MySimpleWebApp.csproj --configuration Release --output ./app'
+                sh 'dotnet publish MySimpleWebApp/MySimpleWebApp.csproj --configuration Release --output ./backend'
             }
 			post {
                 always {
-                    archiveArtifacts artifacts: 'app/**/*'
+                    archiveArtifacts artifacts: 'backend/**/*'
                 }
             }
 		}
@@ -26,11 +26,13 @@ pipeline {
 			    dir("${env.WORKSPACE}/MySimpleWebApp/ClientApp"){
 					sh "npm install"
 					sh "npm run build"
+					sh "mkdir ../../frontend"
+					sh "cp -r build/* ../../frontend"
 				}
 			}
 			post {
 			    always {
-				    archiveArtifacts artifacts: 'MySimpleWebApp/ClientApp/build/**/*'
+    		        archiveArtifacts artifacts: 'frontend/**/*'
 				}
 			}
 		}
