@@ -4,6 +4,7 @@ pipeline {
     }
     environment {
         DOTNET_CLI_HOME = "/tmp/DOTNET_CLI_HOME"
+		DOTNET_CLI_TELEMETRY_OPTOUT = "true"
     }
     stages {
         stage('Build') {
@@ -14,7 +15,7 @@ pipeline {
     }
 	post {
         always {
-            archiveArtifacts artifacts: 'app/**/*', fingerprint: true
+            archiveArtifacts artifacts: 'app/**/*'
         }
     }
 }
