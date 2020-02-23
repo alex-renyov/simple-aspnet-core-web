@@ -11,7 +11,7 @@ pipeline {
 			}
 			steps {
                 sh 'dotnet publish MySimpleWebApp/MySimpleWebApp.csproj --configuration Release --output ./backend'
-				stash name: 'backend', include: 'backend/**/*'
+				stash name: 'backend', includes: 'backend/**/*'
             }
 			post {
                 always {
