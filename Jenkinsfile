@@ -8,15 +8,16 @@ pipeline {
 			environment {
 				DOTNET_CLI_HOME = "/tmp/DOTNET_CLI_HOME"
 				DOTNET_CLI_TELEMETRY_OPTOUT = "true"
+				registry = "limpalex/simple-web-backend"
+                registryCredential = "limpalex-docker-com"
 			}
 			steps {
                 sh 'dotnet publish MySimpleWebApp/MySimpleWebApp.csproj --configuration Release --output ./backend'
-				docker.withRegistry('limpalex/simple-web-backend', 'limpalex-docker-com') {
-					def customImage = docker.build("my-simple-web-app:1.0", "-f ${dockerfile} ./docker-backend")
-					def dockerfile = 'Backend.dockerfile'
-					customImage.push()
-					customImage.push('latest')
-				}
+				def customImage = docker.build("my-simple-web-app:1.0", "-f ${dockerfile} ./docker-backend")
+				def dockerfile = 'Backend.dockerfile'
+				customImage.push()
+				customImage.push('latest')
+
             }
 			post {
                 always {
