@@ -16,6 +16,7 @@ pipeline {
 					sh "dotnet publish MySimpleWebApp/MySimpleWebApp.csproj --configuration Release --output ./backend /p:InformationalVersion=$version /p:FileVersion=$version /p:AssemblyVersion=$version /p:Version=$version"
 					sh "echo $version > .version"
 				}
+				stash name: 'backend', includes: 'backend/**/*'
             }
 			post {
                 always {
@@ -23,6 +24,24 @@ pipeline {
 					archiveArtifacts artifacts: '.version'
                 }
             }
+		}
+		stage('Backend-Docker') {
+			agent any
+			environment {
+				registry = "limpalex/simple-web-backend"
+                registryCredential = "limpalex-docker-com"
+
+			}
+			steps {
+			    unstash name: 'backend'
+				script {
+				    def branch = env.GIT_BRANCH.substring("release/".size())
+					def customImage = docker.build("limpalex/simple-web-backend:$branch", "-f Backend.dockerfile .")
+					docker.withRegistry('', 'limpalex-docker-com') {
+						customImage.push()
+					}
+				}
+			}
 		}
 		stage('Frontend') {
 		    agent {
@@ -35,10 +54,29 @@ pipeline {
 					sh "mkdir ../../frontend"
 					sh "cp -r build/* ../../frontend"
 				}
+				stash name: 'frontend', includes: 'frontend/**/*'
 			}
 			post {
 			    always {
     		        archiveArtifacts artifacts: 'frontend/**/*'
+				}
+			}
+		}
+		stage('Frontend-Docker') {
+			agent any
+			environment {
+				registry = "limpalex/simple-web-frontend"
+                registryCredential = "limpalex-docker-com"
+
+			}
+			steps {
+			    unstash name: 'frontend'
+				script {
+				    def branch = env.GIT_BRANCH.substring("release/".size())
+					def customImage = docker.build("limpalex/simple-web-frontend:$branch", "-f Frontend.dockerfile .")
+					docker.withRegistry('', 'limpalex-docker-com') {
+						customImage.push()
+					}
 				}
 			}
 		}
