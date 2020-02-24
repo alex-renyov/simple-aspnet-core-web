@@ -1,2 +1,2 @@
 FROM nginx
-COPY frontent /usr/share/nginx/html
+COPY ./frontent /usr/share/nginx/html
